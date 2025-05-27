@@ -39,8 +39,9 @@ function todo() {
     if (todo !== "") {
       setTodos([...todos,
       {
-        id: todos.length + 1, // ใช้ความยาวของรายการสิ่งที่ต้องทำเพื่อสร้าง ID ใหม่
-        text: todo.trim() // ตัดช่องว่างที่ไม่จำเป็นออกจากข้อความ
+        id: todos.length > 0 ? Math.max(...todos.map(t => t.id)) + 1 : 1, // เริ่ม id ที่ 1 และเพิ่มขึ้นทีละ 1
+        text: todo.trim(), // ตัดช่องว่างที่ไม่จำเป็นออกจากข้อความ
+        isCompleted: todo.at(true) // กำหนดสถานะเริ่มต้นเป็นไม่เสร็จ
       }
       ])
       setTodo(""); // ล้างอินพุตหลังจากเพิ่ม
@@ -48,9 +49,9 @@ function todo() {
   }
 
   return (
-    <div className='App mx-auto flex justify-center items-center min-h-screen bg-blue-950'>
+    <div className='mx-auto flex justify-center items-center min-h-screen bg-blue-950'>
       {isEditing ? (
-        <FormEditTodo  todos={todos} setTodos={setTodos} setIsEditing={setIsEditing} setCurrentTodo={setCurrentTodo} currentTodo={currentTodo} />
+        <FormEditTodo todos={todos} setTodos={setTodos} setIsEditing={setIsEditing} setCurrentTodo={setCurrentTodo} currentTodo={currentTodo} />
       ) : (
         <form className="containner mx-auto items-center flex justify-center" onSubmit={handleFormSubmit}>
           <div className="bg-white max-w-md flex flex-col p-7 min-h-[550px] rounded-xl shadow-lg p-8 w-96">
@@ -63,13 +64,15 @@ function todo() {
               <Button variant="contained" color="secondary" type='submit'>ADD</Button>
             </div>
             <div className='border boder-2 my-4'></div>
-            <TodoItems todos={todos} setTodos={setTodos} setIsEditing={setIsEditing} setCurrentTodo={setCurrentTodo} />
+            <div className="flex-1 overflow-y-auto my-5" style={{ maxHeight: '400px' }}>
+              <TodoItems todos={todos.slice(0, 10)} setTodos={setTodos} setIsEditing={setIsEditing} setCurrentTodo={setCurrentTodo} />
+            </div>
+            {/* <Button variant="contained">CLEAR ALL</Button> */}
           </div>
         </form>
-      )}
-
-
-    </div>
+      )
+      }
+    </div >
   )
 }
 
